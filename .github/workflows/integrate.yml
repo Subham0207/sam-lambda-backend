@@ -1,0 +1,26 @@
+name: SAM CI
+
+on:
+   push:
+    branches:
+      - master
+
+
+jobs:
+  pullRequest_CI:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: sudo apt install python3-pip
+      - run: pip3 install --upgrade setuptools
+      - run: pip3 install -U awscli
+      - run: aws configure set aws_access_key_id ${{AWS_ACCESS_KEY_ID}}
+      - run: aws configure set aws_secret_access_key ${{AWS_SECRET_TOKEN}}
+      - run: pip3 install -U aws-sam-cli
+      - run: (cd get-views/ && npm ci)
+      - run: (cd get-views/ && npm test)
+      - run: sam build
+
