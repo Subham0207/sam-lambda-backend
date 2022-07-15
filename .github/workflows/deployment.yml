@@ -23,4 +23,10 @@ jobs:
       - run: (cd get-views/ && npm ci)
       - run: sam build
       - run: sam deploy --no-confirm-changeset
+      - run:  | 
+          aws dynamodb put-item
+                --table-name ResumeViewsTable
+                --item  
+                      '{"id": {"S": "subham_resume"},
+                        "views": {"N": "1"}}'
 
