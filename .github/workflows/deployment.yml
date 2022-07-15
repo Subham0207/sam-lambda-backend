@@ -22,5 +22,5 @@ jobs:
       - run: pip3 install -U aws-sam-cli
       - run: (cd get-views/ && npm ci)
       - run: sam build
-      - run: sam deploy
+      - run: sam deploy --confirm-changeset
 
