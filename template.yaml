@@ -31,9 +31,16 @@ Resources:
           Properties:
             Path: /count
             Method: get
-            Cors:
-              AllowMethods: "'GET'"
-              AllowOrigin: "'*'"
+            RestApiId: !Ref MyApi
+
+  MyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'*'"
 
   
   DynamodBTable:

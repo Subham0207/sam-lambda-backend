@@ -44,6 +44,11 @@ exports.lambdaHandler = async (event, context) => {
 
   return {
     statusCode: 200,
+    headers: {
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Methods": "GET", // Allow only GET request
+      "Access-Control-Allow-Origin": "*", // Allow from anywhere
+    },
     body: JSON.stringify(response),
   };
 };
