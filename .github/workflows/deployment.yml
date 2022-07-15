@@ -1,13 +1,13 @@
-name: SAM CI
+name: SAM CD
 
 on:
-  pull_request:
+   push:
     branches:
-      - 'master'
+      - master
 
 
 jobs:
-  pullRequest_CI:
+  Release_CD:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v3
@@ -21,6 +21,6 @@ jobs:
       - run: aws configure set aws_secret_access_key ${{secrets.AWS_SECRET_TOKEN}}
       - run: pip3 install -U aws-sam-cli
       - run: (cd get-views/ && npm ci)
-      - run: (cd get-views/ && npm test)
       - run: sam build
+      - run: sam deploy
 
