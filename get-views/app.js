@@ -3,7 +3,7 @@
 const { client } = require("./client");
 
 // const url = 'http://checkip.amazonaws.com/';
-let response;
+// let response;
 
 /**
  *
@@ -18,37 +18,52 @@ let response;
  *
  */
 exports.lambdaHandler = async (event, context) => {
-  const tablename = process.env.TABLE_NAME;
+  try {
+    const tablename = process.env.TABLE_NAME;
 
-  var params = {
-    TableName: tablename,
-    Key: { id: "subham_resume" },
-    UpdateExpression: "set #a = #a + :x",
-    ExpressionAttributeNames: { "#a": "views" },
-    ExpressionAttributeValues: {
-      ":x": 1,
-    },
-    ReturnValues: "ALL_NEW",
-  };
+    var params = {
+      TableName: tablename,
+      Key: { id: "subham_resume" },
+      UpdateExpression: "set #a = #a + :x",
+      ExpressionAttributeNames: { "#a": "views" },
+      ExpressionAttributeValues: {
+        ":x": 1,
+      },
+      ReturnValues: "ALL_NEW",
+    };
 
-  response = await client(params);
-  // { Attributes: { id: 'subham_resume', views: 3 } }
+    const response = await client(params);
+    // { Attributes: { id: 'subham_resume', views: 3 } }
 
-  console.log(response);
+    console.log(response);
 
-  //test expect
-  // {
-  //   statusCode: 200,
-  //   body: JSON.stringify({ Attributes: { id: 'subham_resume', views: 3 } }),
-  // }
+    //test expect
+    // {
+    //   statusCode: 200,
+    //   body: JSON.stringify({ Attributes: { id: 'subham_resume', views: 3 } }),
+    // }
 
-  return {
-    statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Headers": "Content-Type",
-      "Access-Control-Allow-Methods": "GET", // Allow only GET request
-      "Access-Control-Allow-Origin": "*", // Allow from anywhere
-    },
-    body: JSON.stringify(response),
-  };
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET", // Allow only GET request
+        "Access-Control-Allow-Origin": "*", // Allow from
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(response),
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      statusCode: 400,
+      headers: {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET", // Allow only GET request
+        "Access-Control-Allow-Origin": "*", // Allow from
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: "Data cannot be updated correctly" }),
+    };
+  }
 };

@@ -3,16 +3,10 @@ const aws = require("aws-sdk");
 const ddb = new aws.DynamoDB.DocumentClient();
 
 exports.client = async (params) => {
-  let response;
-  await ddb
-    .update(params, (err, data) => {
-      if (err) {
-        console.log(err);
-      } else {
-        response = data;
-      }
-    })
-    .promise();
-
-  return response;
+  try {
+    const response = await ddb.update(params).promise();
+    return response;
+  } catch (err) {
+    return err;
+  }
 };
