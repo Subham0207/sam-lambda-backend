@@ -21,6 +21,7 @@ exports.lambdaHandler = async (event, context) => {
   try {
     const tablename = process.env.TABLE_NAME;
 
+    console.log(event);
     const cookie = event.headers.Cookie || "no cookie found";
 
     let response;
@@ -62,13 +63,14 @@ exports.lambdaHandler = async (event, context) => {
     return {
       statusCode: 200,
       multiValueHeaders: {
-        "Set-Cookie": ["viewed=true"],
+        "Set-Cookie": ["viewed=true;SameSite=None; Secure"],
       },
       headers: {
         "Access-Control-Allow-Headers": "Content-Type, Set-Cookie",
         "Access-Control-Allow-Methods": "GET", // Allow only GET request
-        "Access-Control-Allow-Origin": "*", // Allow from
+        "Access-Control-Allow-Origin": `${event.multiValueHeaders.origin[0]}`, // Allow from
         "Content-Type": "application/json",
+        "Access-Control-Allow-Credentials": true,
       },
       body: JSON.stringify(response),
     };
