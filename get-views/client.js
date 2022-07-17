@@ -10,3 +10,12 @@ exports.client = async (params) => {
     return err;
   }
 };
+
+exports.getItem = async (params) => {
+  try {
+    const response = await ddb.get(params).promise();
+    return { Attributes: response.Item };
+  } catch (err) {
+    return err;
+  }
+};

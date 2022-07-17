@@ -1,6 +1,6 @@
 // const axios = require('axios')
 
-const { client } = require("./client");
+const { client, getItem } = require("./client");
 
 // const url = 'http://checkip.amazonaws.com/';
 // let response;
@@ -21,18 +21,34 @@ exports.lambdaHandler = async (event, context) => {
   try {
     const tablename = process.env.TABLE_NAME;
 
-    var params = {
-      TableName: tablename,
-      Key: { id: "subham_resume" },
-      UpdateExpression: "set #a = #a + :x",
-      ExpressionAttributeNames: { "#a": "views" },
-      ExpressionAttributeValues: {
-        ":x": 1,
-      },
-      ReturnValues: "ALL_NEW",
-    };
+    const cookie = event.headers.Cookie || "no cookie found";
 
-    const response = await client(params);
+    let response;
+    if (cookie !== "viewed=true") {
+      //increament views
+      const params = {
+        TableName: tablename,
+        Key: { id: "subham_resume" },
+        UpdateExpression: "set #a = #a + :x",
+        ExpressionAttributeNames: { "#a": "views" },
+        ExpressionAttributeValues: {
+          ":x": 1,
+        },
+        ReturnValues: "ALL_NEW",
+      };
+
+      response = await client(params);
+    } else {
+      //don't increment views just return it.
+      const params = {
+        TableName: tablename,
+        Key: {
+          id: "subham_resume",
+        },
+      };
+
+      response = await getItem(params);
+    }
     // { Attributes: { id: 'subham_resume', views: 3 } }
 
     console.log(response);
@@ -45,8 +61,11 @@ exports.lambdaHandler = async (event, context) => {
 
     return {
       statusCode: 200,
+      multiValueHeaders: {
+        "Set-Cookie": ["viewed=true"],
+      },
       headers: {
-        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Headers": "Content-Type, Set-Cookie",
         "Access-Control-Allow-Methods": "GET", // Allow only GET request
         "Access-Control-Allow-Origin": "*", // Allow from
         "Content-Type": "application/json",

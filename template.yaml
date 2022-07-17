@@ -17,9 +17,10 @@ Resources:
       StageName: prod
       Cors:
         AllowMethods: "'POST, GET'"
-        AllowHeaders: "'Content-Type'"
+        AllowHeaders: "'Content-Type, Set-Cookie'"
         AllowOrigin: "'*'"
         MaxAge: "'600'"
+        # AllowCredentials: true
 
   GetViews:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
