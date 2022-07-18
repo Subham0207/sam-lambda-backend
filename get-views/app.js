@@ -63,7 +63,11 @@ exports.lambdaHandler = async (event, context) => {
     return {
       statusCode: 200,
       multiValueHeaders: {
-        "Set-Cookie": ["viewed=true;SameSite=None; Secure"],
+        "Set-Cookie": [
+          `viewed=true;SameSite=None; Secure; Expires=${new Date(
+            "jan 1 2030"
+          ).toUTCString()}`,
+        ],
       },
       headers: {
         "Access-Control-Allow-Headers": "Content-Type, Set-Cookie",
